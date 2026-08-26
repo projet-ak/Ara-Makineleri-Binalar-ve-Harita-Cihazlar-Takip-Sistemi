@@ -1,0 +1,6 @@
+# Yüklenen dosyalarda PHP çalıştırmayı engelle
+<FilesMatch "\.(php|phtml|php3|php4|php5|phar|pl|py|cgi|sh)$">
+    Require all denied
+</FilesMatch>
+RemoveHandler .php .phtml
+php_flag engine off
