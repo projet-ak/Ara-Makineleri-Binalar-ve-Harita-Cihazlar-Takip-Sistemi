@@ -35,6 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: varlik.php?id=' . $id); exit;
     }
 }
+try { $lok_listesi = $d->query("SELECT ad FROM lokasyonlar WHERE aktif=1 ORDER BY ad")->fetchAll(PDO::FETCH_COLUMN); }
+catch (PDOException $ex) { $lok_listesi = []; }
 $baslik = $id ? 'Varlık Düzenle' : 'Yeni Varlık';
 require_once __DIR__ . '/inc/header.php';
 function alan($ad, $etiket, $v, $tip = 'text') {
@@ -53,8 +55,13 @@ function alan($ad, $etiket, $v, $tip = 'text') {
         <?php alan('s_no', 'Sıra No', $v); alan('sahiplik', 'Sahiplik', $v); alan('ifs_nesne_no', 'IFS Nesne No', $v);
         alan('cins', 'Cins *', $v); alan('marka', 'Marka / Özellik', $v); alan('model', 'Model', $v);
         alan('ruhsat_no', 'Ruhsat No', $v); alan('plaka', 'Plaka / Seri No', $v); alan('motor_no', 'Motor Seri No', $v);
-        alan('sasi_no', 'Şasi No', $v); alan('model_yili', 'Model / Alım Yılı', $v); alan('lokasyon', 'Lokasyon', $v);
-        alan('lokasyon_gecmisi', 'Lokasyon Geçmişi', $v); alan('sevk_tarihi', 'Lokasyona Sevk Tarihi', $v); ?>
+        alan('sasi_no', 'Şasi No', $v); alan('model_yili', 'Model / Alım Yılı', $v); ?>
+        <div><label class="flbl">Lokasyon</label>
+            <input class="frm" name="lokasyon" list="lokListe" value="<?= e($v['lokasyon'] ?? '') ?>" placeholder="Listeden seçin veya yazın...">
+            <datalist id="lokListe">
+                <?php foreach ($lok_listesi as $la): ?><option value="<?= e($la) ?>"></option><?php endforeach; ?>
+            </datalist></div>
+        <?php alan('lokasyon_gecmisi', 'Lokasyon Geçmişi', $v); alan('sevk_tarihi', 'Lokasyona Sevk Tarihi', $v); ?>
     </div>
 </div>
 <div class="card" style="margin-bottom:1rem">

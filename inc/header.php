@@ -9,6 +9,7 @@ $menu = [
     ['varliklar.php',   'bi-truck',           'Varlıklar',        ['admin','saha','yonetim']],
     ['hareketler.php',  'bi-arrow-left-right','Sevk & Hareket',   ['admin','saha','yonetim']],
     ['calisma.php',     'bi-speedometer2',    'Çalışma Saatleri', ['admin','saha','yonetim']],
+    ['lokasyonlar.php', 'bi-geo-alt',         'Lokasyonlar',      ['admin','saha','yonetim']],
     ['raporlar.php',    'bi-bar-chart-line',  'Raporlar',         ['admin','yonetim']],
     ['kullanicilar.php','bi-people',          'Kullanıcılar',     ['admin']],
     ['yedekleme.php',   'bi-database-down',   'Yedekleme',        ['admin']],
