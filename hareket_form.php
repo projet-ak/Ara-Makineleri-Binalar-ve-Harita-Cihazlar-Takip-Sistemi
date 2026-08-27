@@ -2,7 +2,7 @@
 require_once __DIR__ . '/inc/auth.php';
 yetki_zorunlu('admin', 'saha');
 $d = db();
-$varliklar = $d->query("SELECT id, cins, marka, model, plaka FROM varliklar WHERE yil=2026 AND aktif=1 ORDER BY cins, marka")->fetchAll();
+$varliklar = $d->query("SELECT id, cins, marka, model, plaka, lokasyon FROM varliklar WHERE yil=2026 AND aktif=1 ORDER BY cins, marka")->fetchAll();
 try { $lok_listesi = $d->query("SELECT ad FROM lokasyonlar WHERE aktif=1 ORDER BY ad")->fetchAll(PDO::FETCH_COLUMN); }
 catch (PDOException $ex) { $lok_listesi = []; }
 $sec = (int)($_GET['varlik_id'] ?? 0);
@@ -40,13 +40,28 @@ require_once __DIR__ . '/inc/header.php';
 <form method="post">
 <input type="hidden" name="csrf" value="<?= csrf_token() ?>">
 <label class="flbl">Araç / Makine / Cihaz *</label>
-<select class="frm" name="varlik_id" required>
+<select class="frm" name="varlik_id" id="varlikSec" required>
     <option value="">Seçiniz...</option>
     <?php foreach ($varliklar as $va): ?>
-    <option value="<?= $va['id'] ?>" <?= $sec === (int)$va['id'] ? 'selected' : '' ?>>
+    <option value="<?= $va['id'] ?>" data-lok="<?= e($va['lokasyon'] ?? '') ?>" <?= $sec === (int)$va['id'] ? 'selected' : '' ?>>
         <?= e(trim($va['cins'] . ' ' . $va['marka'] . ' ' . $va['model']) . ' — ' . ($va['plaka'] ?: 'plakasız')) ?></option>
     <?php endforeach; ?>
 </select>
+<label class="flbl">Mevcut Lokasyon</label>
+<input class="frm" id="mevcutLok" value="" readonly
+       style="background:#F2F5F4;color:var(--ern);font-weight:600" placeholder="Varlık seçince görünür...">
+<script>
+(function () {
+    var sec = document.getElementById('varlikSec'), kutu = document.getElementById('mevcutLok');
+    function guncelle() {
+        var o = sec.options[sec.selectedIndex];
+        kutu.value = (o && o.dataset.lok) ? o.dataset.lok : '';
+        kutu.placeholder = sec.value ? 'Lokasyon kaydı yok' : 'Varlık seçince görünür...';
+    }
+    sec.addEventListener('change', guncelle);
+    guncelle();
+})();
+</script>
 <label class="flbl">İşlem Türü *</label>
 <select class="frm" name="islem_turu" required>
     <?php foreach (['SEVK','BAKIM ONARIM','HAKEDİŞ','SİGORTA','MUAYENE','DİĞER'] as $t): ?><option><?= $t ?></option><?php endforeach; ?>
