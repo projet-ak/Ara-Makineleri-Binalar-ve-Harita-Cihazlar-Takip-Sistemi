@@ -70,6 +70,7 @@ $ay_adlari = [1=>'Oca',2=>'Şub',3=>'Mar',4=>'Nis',5=>'May',6=>'Haz',7=>'Tem',8=
         <option value="sahiplik" <?= $grup === 'sahiplik' ? 'selected' : '' ?>>Sahiplik</option></select></div>
     <button class="btn pri"><i class="bi bi-arrow-repeat"></i> Uygula</button>
     <a class="btn" href="?yil=<?= $yil ?>&grup=<?= $grup ?>&csv=1"><i class="bi bi-filetype-csv"></i> CSV İndir</a>
+    <a class="btn pri" href="rapor_excel.php"><i class="bi bi-file-earmark-excel"></i> Excel Rapor Oluştur</a>
 </form>
 </div>
 
