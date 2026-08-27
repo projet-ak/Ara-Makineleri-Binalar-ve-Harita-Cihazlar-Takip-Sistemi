@@ -114,6 +114,13 @@ label.flbl { display:block; font-size:.72rem; font-weight:600; color:var(--mut);
     </div>
 </aside>
 <main class="main">
+<?php if (!empty($_SESSION['varsayilan_sifre'])): ?>
+<div class="mesaj err" style="display:flex;align-items:center;gap:.6rem">
+    <i class="bi bi-shield-exclamation" style="font-size:1.2rem"></i>
+    <div><b>Güvenlik uyarısı:</b> Hâlâ varsayılan admin şifresini kullanıyorsunuz.
+    <a href="kullanicilar.php" style="font-weight:700">Kullanıcılar sayfasından</a> hemen değiştirin.</div>
+</div>
+<?php endif; ?>
 <div class="topbar">
     <h1><button class="btn menu-btn" onclick="document.getElementById('side').classList.toggle('acik')"><i class="bi bi-list"></i></button>
     <?= e($baslik ?? 'Panel') ?></h1>

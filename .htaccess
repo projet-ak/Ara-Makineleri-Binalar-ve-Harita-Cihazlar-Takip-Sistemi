@@ -1,0 +1,8 @@
+# ERN Varlık — güvenlik kuralları (Apache)
+# .git, yapılandırma, kurulum ve dahili klasörlere web erişimini engelle
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule ^\.git - [F,L]
+RewriteRule ^(inc|install|backups|assets)/ - [F,L]
+RewriteRule ^config(\.example)?\.php$ - [F,L]
+</IfModule>

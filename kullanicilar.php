@@ -32,6 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 $liste = $d->query('SELECT * FROM kullanicilar ORDER BY rol, kullanici_adi')->fetchAll();
+try {
+    $giris_log = $d->query('SELECT * FROM giris_log ORDER BY id DESC LIMIT 25')->fetchAll();
+} catch (PDOException $ex) { $giris_log = []; }
 $rol_ad = ['admin' => 'Admin — tam yetki', 'saha' => 'Saha — sevk / çalışma girişi', 'yonetim' => 'Yönetim — rapor görüntüleme'];
 ?>
 <?php if ($mesaj): ?><div class="mesaj <?= $tip ?>"><?= e($mesaj) ?></div><?php endif; ?>
@@ -78,5 +81,19 @@ $rol_ad = ['admin' => 'Admin — tam yetki', 'saha' => 'Saha — sevk / çalış
         <button class="btn pri" style="margin-top:1rem;width:100%"><i class="bi bi-check-lg"></i> Ekle</button>
     </form>
 </div>
+</div>
+<div class="card" style="margin-top:1rem">
+    <h3 style="margin:0 0 .8rem;font-size:.95rem"><i class="bi bi-shield-lock" style="color:var(--ern-light)"></i> Son Giriş Denemeleri</h3>
+    <?php if (!$giris_log): ?><div style="color:var(--mut);font-size:.83rem">Henüz kayıt yok.</div><?php else: ?>
+    <table class="tbl">
+    <tr><th>Tarih</th><th>IP Adresi</th><th>Kullanıcı Adı</th><th>Sonuç</th></tr>
+    <?php foreach ($giris_log as $g): ?>
+    <tr><td><?= date('d.m.Y H:i:s', strtotime($g['tarih'])) ?></td>
+        <td style="font-family:monospace;font-size:.78rem"><?= e($g['ip']) ?></td>
+        <td><?= e($g['kullanici_adi']) ?></td>
+        <td><span class="tag <?= $g['basarili'] ? '' : 'kirmizi' ?>"><?= $g['basarili'] ? 'Başarılı' : 'Başarısız' ?></span></td></tr>
+    <?php endforeach; ?>
+    </table>
+    <?php endif; ?>
 </div>
 <?php require __DIR__ . '/inc/footer.php'; ?>

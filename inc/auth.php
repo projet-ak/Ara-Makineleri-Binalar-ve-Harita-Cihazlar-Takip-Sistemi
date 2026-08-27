@@ -1,7 +1,20 @@
 <?php
 require_once __DIR__ . '/db.php';
+// Oturum çerezi sıkılaştırma
 session_name('ernvarlik_sess');
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path' => '/',
+    'secure' => !empty($_SERVER['HTTPS']),
+    'httponly' => true,
+    'samesite' => 'Lax',
+]);
 session_start();
+// Güvenlik başlıkları
+header('X-Frame-Options: SAMEORIGIN');
+header('X-Content-Type-Options: nosniff');
+header('Referrer-Policy: same-origin');
+header('X-XSS-Protection: 1; mode=block');
 
 function kullanici() { return $_SESSION['kullanici'] ?? null; }
 function rol(): string { return $_SESSION['kullanici']['rol'] ?? ''; }

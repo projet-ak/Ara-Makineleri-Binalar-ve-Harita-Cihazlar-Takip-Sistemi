@@ -21,7 +21,7 @@ $toplam_gider = array_sum(array_column($hareket, 'gider'));
     <div class="card">
         <h3 style="margin:0 0 .8rem;font-size:.95rem"><i class="bi bi-info-circle"></i> Kimlik Bilgileri
             <span class="tag" style="float:right"><?= e($v['yil']) ?></span></h3>
-        <?php if ($v['foto']): ?><img src="<?= e($v['foto']) ?>" style="width:100%;max-height:260px;object-fit:cover;border-radius:12px;margin-bottom:1rem"><?php endif; ?>
+        <?php if ($v['foto']): ?><img src="dosya_goster.php?foto=<?= $id ?>" style="width:100%;max-height:260px;object-fit:cover;border-radius:12px;margin-bottom:1rem"><?php endif; ?>
         <table class="tbl">
         <?php
         $alanlar = ['Sahiplik' => 'sahiplik', 'IFS Nesne No' => 'ifs_nesne_no', 'Cins' => 'cins', 'Marka' => 'marka',
@@ -72,8 +72,8 @@ $toplam_gider = array_sum(array_column($hareket, 'gider'));
             <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.6rem">
             <?php foreach ($dosyalar as $f): $resim = preg_match('/\.(jpe?g|png|webp)$/i', $f['yol']); ?>
                 <div style="border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:.68rem">
-                    <a href="<?= e($f['yol']) ?>" target="_blank">
-                    <?php if ($resim): ?><img src="<?= e($f['yol']) ?>" style="width:100%;height:80px;object-fit:cover;display:block">
+                    <a href="dosya_goster.php?id=<?= $f['id'] ?>" target="_blank">
+                    <?php if ($resim): ?><img src="dosya_goster.php?id=<?= $f['id'] ?>" style="width:100%;height:80px;object-fit:cover;display:block">
                     <?php else: ?><div style="height:80px;display:flex;align-items:center;justify-content:center;background:#F7FAF9;font-size:1.6rem;color:var(--ern)"><i class="bi bi-file-earmark-text"></i></div><?php endif; ?>
                     </a>
                     <div style="padding:.3rem .45rem">

@@ -3,16 +3,40 @@ require_once __DIR__ . '/inc/auth.php';
 if (girisli()) { header('Location: index.php'); exit; }
 $hata = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $st = db()->prepare('SELECT * FROM kullanicilar WHERE kullanici_adi = ? AND aktif = 1');
-    $st->execute([trim($_POST['username'] ?? '')]);
-    $k = $st->fetch();
-    if ($k && password_verify($_POST['password'] ?? '', $k['sifre_hash'])) {
-        session_regenerate_id(true);
-        $_SESSION['kullanici'] = ['id' => $k['id'], 'ad' => $k['ad_soyad'], 'kullanici_adi' => $k['kullanici_adi'], 'rol' => $k['rol']];
-        db()->prepare('UPDATE kullanicilar SET son_giris = NOW() WHERE id = ?')->execute([$k['id']]);
-        header('Location: index.php'); exit;
+    $d = db();
+    $d->exec("CREATE TABLE IF NOT EXISTS giris_log (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        ip VARCHAR(45) NOT NULL,
+        kullanici_adi VARCHAR(60) NULL,
+        basarili TINYINT(1) NOT NULL DEFAULT 0,
+        tarih DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        INDEX (ip), INDEX (tarih)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    $ip = $_SERVER['REMOTE_ADDR'] ?? '?';
+    // Kaba kuvvet koruması: aynı IP'den 15 dakikada 5+ başarısız deneme -> blok
+    $st = $d->prepare("SELECT COUNT(*) c FROM giris_log WHERE ip = ? AND basarili = 0 AND tarih > DATE_SUB(NOW(), INTERVAL 15 MINUTE)");
+    $st->execute([$ip]);
+    if ((int)$st->fetch()['c'] >= 5) {
+        $hata = 'Çok fazla başarısız deneme. Lütfen 15 dakika sonra tekrar deneyin.';
+    } else {
+        $ka = trim($_POST['username'] ?? '');
+        $st = $d->prepare('SELECT * FROM kullanicilar WHERE kullanici_adi = ? AND aktif = 1');
+        $st->execute([$ka]);
+        $k = $st->fetch();
+        $sifre = $_POST['password'] ?? '';
+        if ($k && password_verify($sifre, $k['sifre_hash'])) {
+            $d->prepare('INSERT INTO giris_log (ip, kullanici_adi, basarili) VALUES (?,?,1)')->execute([$ip, $ka]);
+            session_regenerate_id(true);
+            $_SESSION['kullanici'] = ['id' => $k['id'], 'ad' => $k['ad_soyad'], 'kullanici_adi' => $k['kullanici_adi'], 'rol' => $k['rol']];
+            // Varsayılan şifre hâlâ kullanılıyorsa panelde uyarı göster
+            $_SESSION['varsayilan_sifre'] = ($k['kullanici_adi'] === 'admin' && $sifre === 'ernvarlik2026');
+            db()->prepare('UPDATE kullanicilar SET son_giris = NOW() WHERE id = ?')->execute([$k['id']]);
+            header('Location: index.php'); exit;
+        }
+        $d->prepare('INSERT INTO giris_log (ip, kullanici_adi, basarili) VALUES (?,?,0)')->execute([$ip, $ka]);
+        usleep(400000); // deneme başına yapay gecikme
+        $hata = 'Kullanıcı adı veya şifre hatalı.';
     }
-    $hata = 'Kullanıcı adı veya şifre hatalı.';
 }
 ?>
 <!DOCTYPE html>
