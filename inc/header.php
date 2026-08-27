@@ -11,7 +11,11 @@ $menu = [
     ['calisma.php',     'bi-speedometer2',    'Çalışma Saatleri', ['admin','saha','yonetim']],
     ['raporlar.php',    'bi-bar-chart-line',  'Raporlar',         ['admin','yonetim']],
     ['kullanicilar.php','bi-people',          'Kullanıcılar',     ['admin']],
+    ['yedekleme.php',   'bi-database-down',   'Yedekleme',        ['admin']],
 ];
+// Günlük otomatik yedek — günün ilk sayfa açılışında alınır
+require_once __DIR__ . '/yedek.php';
+yedek_gunluk_kontrol();
 ?>
 <!DOCTYPE html>
 <html lang="tr">

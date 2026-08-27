@@ -3,3 +3,5 @@ uploads/*
 !uploads/.htaccess
 install/seed.sql
 *.xlsx
+backups/*
+!backups/.htaccess
