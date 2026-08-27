@@ -52,10 +52,10 @@ require_once __DIR__ . '/inc/header.php';
     <?php foreach (['SEVK','BAKIM ONARIM','HAKEDİŞ','SİGORTA','MUAYENE','DİĞER'] as $t): ?><option><?= $t ?></option><?php endforeach; ?>
 </select>
 <label class="flbl">Lokasyon (sevk için hedef lokasyon)</label>
-<input class="frm" name="lokasyon" list="lokListe" placeholder="Listeden seçin veya yazın...">
-<datalist id="lokListe">
-    <?php foreach ($lok_listesi as $la): ?><option value="<?= e($la) ?>"></option><?php endforeach; ?>
-</datalist>
+<select class="frm" name="lokasyon">
+    <option value="">Seçiniz...</option>
+    <?php foreach ($lok_listesi as $la): ?><option value="<?= e($la) ?>"><?= e($la) ?></option><?php endforeach; ?>
+</select>
 <div style="font-size:.68rem;color:var(--mut);margin-top:.2rem">Yeni lokasyonları <a href="lokasyonlar.php">Lokasyonlar</a> sayfasından ekleyebilirsiniz.</div>
 <label class="flbl">İşlem Açıklaması</label>
 <textarea class="frm" name="aciklama" rows="2" placeholder="Örn: Motor kapak conta onarımı"></textarea>

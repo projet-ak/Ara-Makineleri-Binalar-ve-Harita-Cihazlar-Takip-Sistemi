@@ -57,10 +57,16 @@ function alan($ad, $etiket, $v, $tip = 'text') {
         alan('ruhsat_no', 'Ruhsat No', $v); alan('plaka', 'Plaka / Seri No', $v); alan('motor_no', 'Motor Seri No', $v);
         alan('sasi_no', 'Şasi No', $v); alan('model_yili', 'Model / Alım Yılı', $v); ?>
         <div><label class="flbl">Lokasyon</label>
-            <input class="frm" name="lokasyon" list="lokListe" value="<?= e($v['lokasyon'] ?? '') ?>" placeholder="Listeden seçin veya yazın...">
-            <datalist id="lokListe">
-                <?php foreach ($lok_listesi as $la): ?><option value="<?= e($la) ?>"></option><?php endforeach; ?>
-            </datalist></div>
+            <select class="frm" name="lokasyon">
+                <option value="">Seçiniz...</option>
+                <?php $mevcut_lok = $v['lokasyon'] ?? '';
+                if ($mevcut_lok !== '' && !in_array($mevcut_lok, $lok_listesi, true)): ?>
+                <option value="<?= e($mevcut_lok) ?>" selected><?= e($mevcut_lok) ?> (listede yok)</option>
+                <?php endif;
+                foreach ($lok_listesi as $la): ?>
+                <option value="<?= e($la) ?>" <?= $la === $mevcut_lok ? 'selected' : '' ?>><?= e($la) ?></option>
+                <?php endforeach; ?>
+            </select></div>
         <?php alan('lokasyon_gecmisi', 'Lokasyon Geçmişi', $v); alan('sevk_tarihi', 'Lokasyona Sevk Tarihi', $v); ?>
     </div>
 </div>
